@@ -7,24 +7,43 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #0a0a0a;
+  background: #1a1a2e;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100vh;
+  font-family: 'Courier New', monospace;
+  color: #eee;
   overflow: hidden;
-  font-family: monospace;
+}
+#header {
+  display: flex;
+  justify-content: space-between;
+  width: 400px;
+  margin-bottom: 10px;
+  font-size: 18px;
 }
 canvas {
-  border: 2px solid #33ff33;
-  background: #111;
-  max-width: 100vw;
-  max-height: 100vh;
+  border: 2px solid #0f3460;
+  background: #16213e;
+  display: block;
+}
+#message {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #e94560;
+  height: 20px;
 }
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-<script src="src/main.js"></script>
+<div id="header">
+  <span>Score: <span id="score">0</span></span>
+  <span>High Score: <span id="highscore">0</span></span>
+</div>
+<canvas id="game" width="400" height="400"></canvas>
+<div id="message">Press any arrow key to start</div>
+<script src="src/game.js"></script>
 </body>
 </html>
