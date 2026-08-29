@@ -6,23 +6,91 @@
 <title>Snake Classic</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; color: #fff; flex-direction: column; }
-  canvas { border: 2px solid #0f0; image-rendering: pixelated; }
-  #score { margin-top: 10px; font-size: 20px; color: #0f0; }
-  #gameover { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: rgba(0,0,0,0.85); padding: 30px; border: 2px solid #f00; }
-  #gameover h1 { color: #f00; margin-bottom: 10px; }
-  #restart { background: #0f0; color: #000; border: none; padding: 10px 20px; font-size: 16px; cursor: pointer; font-family: monospace; margin-top: 15px; }
-  #restart:hover { background: #0a0; }
+  body {
+    background: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Courier New', monospace;
+    color: #0f0;
+    overflow: hidden;
+  }
+  canvas {
+    border: 2px solid #0f0;
+    background: #000;
+  }
+  #ui {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+  }
+  #score {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+  #highScore {
+    font-size: 16px;
+    color: #0a0;
+  }
+  #gameOver {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    border: 2px solid #0f0;
+    padding: 30px 40px;
+    text-align: center;
+    z-index: 20;
+  }
+  #gameOver h2 {
+    font-size: 36px;
+    margin-bottom: 15px;
+    color: #f00;
+  }
+  #gameOver p {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  #gameOver button {
+    background: #0f0;
+    color: #000;
+    border: none;
+    padding: 10px 25px;
+    font-size: 18px;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+  }
+  #gameOver button:hover {
+    background: #0a0;
+  }
+  #instructions {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #0a0;
+  }
 </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-<div id="score">Score: 0</div>
-<div id="gameover">
-  <h1>GAME OVER</h1>
-  <p>Final Score: <span id="final">0</span></p>
-  <button id="restart">Play Again</button>
+<div id="ui">
+  <div id="score">Score: 0</div>
+  <div id="highScore">High Score: 0</div>
 </div>
+<canvas id="game"></canvas>
+<div id="gameOver">
+  <h2>GAME OVER</h2>
+  <p id="finalScore">Score: 0</p>
+  <button id="restartBtn">PLAY AGAIN</button>
+</div>
+<div id="instructions">Arrow keys / WASD to move</div>
 <script src="src/game.js"></script>
 </body>
 </html>
