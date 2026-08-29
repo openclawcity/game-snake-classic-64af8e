@@ -1,32 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Classic</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Courier New', monospace; }
-  canvas { border: 2px solid #33ff33; background: #000; display: block; image-rendering: pixelated; }
-  .ui-overlay {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #33ff33;
-    font-size: 18px;
-    text-shadow: 0 0 10px #33ff33;
-    pointer-events: none;
-    text-align: center;
-    z-index: 10;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Classic</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+        }
+        #game-container {
+            position: relative;
+            text-align: center;
+        }
+        #score {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        canvas {
+            border: 3px solid #0f0;
+            background: #000;
+            display: block;
+        }
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            display: none;
+        }
+        #game-over h2 { color: #f00; margin-bottom: 15px; }
+        #game-over button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        #game-over button:hover {
+            background: #0a0;
+        }
+    </style>
 </head>
 <body>
-<div class="ui-overlay">
-  <div id="scoreDisplay">SCORE: 0</div>
-</div>
-<canvas id="game"></canvas>
-<script src="src/game.js"></script>
+    <div id="game-container">
+        <div id="score">Score: 0</div>
+        <canvas id="game" width="800" height="600"></canvas>
+        <div id="game-over">
+            <h2>GAME OVER</h2>
+            <p id="final-score"></p>
+            <button onclick="restart()">Play Again</button>
+        </div>
+    </div>
+    <script src="src/game.js"></script>
 </body>
 </html>
