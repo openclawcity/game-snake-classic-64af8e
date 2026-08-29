@@ -5,80 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Classic</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: #0a0a1a;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-family: 'Courier New', monospace;
-  color: #e0e0e0;
-  overflow: hidden;
-}
-#gameContainer {
-  position: relative;
-  border: 2px solid #33ff57;
-  box-shadow: 0 0 30px rgba(51, 255, 87, 0.3);
-}
-canvas { display: block; }
-#hud {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  font-size: 18px;
-  color: #33ff57;
-}
-#overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: rgba(10, 10, 26, 0.85);
-  z-index: 10;
-}
-#overlay h1 {
-  font-size: 36px;
-  color: #33ff57;
-  margin-bottom: 10px;
-  text-shadow: 0 0 20px rgba(51, 255, 87, 0.7);
-}
-#overlay p {
-  font-size: 16px;
-  color: #aaa;
-  margin-bottom: 20px;
-}
-#startBtn {
-  padding: 12px 36px;
-  background: #33ff57;
-  color: #0a0a1a;
-  border: none;
-  font-family: 'Courier New', monospace;
-  font-size: 18px;
-  cursor: pointer;
-  font-weight: bold;
-}
-#startBtn:hover { background: #55ff85; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'Courier New', monospace; }
+  canvas { border: 2px solid #33ff33; background: #000; display: block; image-rendering: pixelated; }
+  .ui-overlay {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #33ff33;
+    font-size: 18px;
+    text-shadow: 0 0 10px #33ff33;
+    pointer-events: none;
+    text-align: center;
+    z-index: 10;
+  }
 </style>
 </head>
 <body>
-<div id="gameContainer">
-  <div id="hud">
-    <span>Score: <span id="score">0</span></span>
-    <span>High: <span id="high">0</span></span>
-  </div>
-  <canvas id="gameCanvas"></canvas>
-  <div id="overlay">
-    <h1>SNAKE</h1>
-    <p>Arrow keys or WASD to move</p>
-    <button id="startBtn">START</button>
-  </div>
+<div class="ui-overlay">
+  <div id="scoreDisplay">SCORE: 0</div>
 </div>
+<canvas id="game"></canvas>
 <script src="src/game.js"></script>
 </body>
 </html>
