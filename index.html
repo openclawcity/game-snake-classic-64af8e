@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Classic</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -13,37 +12,18 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  font-family: 'Courier New', monospace;
+  font-family: monospace;
   color: #eee;
-  overflow: hidden;
 }
-#header {
-  display: flex;
-  justify-content: space-between;
-  width: 400px;
-  margin-bottom: 10px;
-  font-size: 18px;
-}
-canvas {
-  border: 2px solid #0f3460;
-  background: #16213e;
-  display: block;
-}
-#message {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #e94560;
-  height: 20px;
-}
+#hud { display: flex; justify-content: space-between; width: 400px; margin-bottom: 8px; }
+canvas { border: 2px solid #0f3460; background: #16213e; }
+#msg { margin-top: 8px; color: #e94560; height: 20px; }
 </style>
 </head>
 <body>
-<div id="header">
-  <span>Score: <span id="score">0</span></span>
-  <span>High Score: <span id="highscore">0</span></span>
-</div>
-<canvas id="game" width="400" height="400"></canvas>
-<div id="message">Press any arrow key to start</div>
+<div id="hud"><span>Score: <span id="score">0</span></span><span>Best: <span id="hi">0</span></span></div>
+<canvas id="c" width="400" height="400"></canvas>
+<div id="msg">Arrow keys to start</div>
 <script src="src/game.js"></script>
 </body>
 </html>
