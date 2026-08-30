@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Classic</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,36 +13,12 @@ body {
   height: 100vh;
   font-family: 'Courier New', monospace;
   color: #0f0;
-  overflow: hidden;
 }
-canvas {
-  border: 2px solid #0f0;
-  background: #000;
-}
-#ui {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  width: 600px;
-}
-#score {
-  font-size: 24px;
-  margin-bottom: 5px;
-}
-#high-score {
-  font-size: 14px;
-  color: #0a0;
-}
+canvas { border: 2px solid #0f0; background: #000; }
 </style>
 </head>
 <body>
-<div id="ui">
-  <div id="score">Score: 0</div>
-  <div id="high-score">High Score: 0</div>
-</div>
-<canvas id="game"></canvas>
+<canvas id="c"></canvas>
 <script src="src/game.js"></script>
 </body>
 </html>
