@@ -1,70 +1,79 @@
-const canvas = document.getElementById('c');
+const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-const GRID = 20;
-const COLS = canvas.width / GRID;
-const ROWS = canvas.height / GRID;
+const GRID_SIZE = 20;
+const TILE_COUNT = canvas.width / GRID_SIZE;
 
-let snake, dir, nextDir, food, score, alive, gameLoop;
+let snake = [{x: 10, y: 10}];
+let food = {x: 15, y: 15};
+let dx = 1;
+let dy = 0;
+let score = 0;
+let gameSpeed = 100;
 
-function init() {
-  snake = [{x:10,y:10}];
-  dir = {x:1,y:0};
-  nextDir = {x:1,y:0};
-  score = 0;
-  alive = true;
-  placeFood();
-  clearInterval(gameLoop);
-  gameLoop = setInterval(update, 120);
+function randomFood() {
+    food.x = Math.floor(Math.random() * TILE_COUNT);
+    food.y = Math.floor(Math.random() * TILE_COUNT);
 }
 
-function placeFood() {
-  let pos;
-  do {
-    pos = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)};
-  } while (snake.some(s => s.x===pos.x && s.y===pos.y));
-  food = pos;
-}
-
-function update() {
-  if (!alive) return;
-  dir = {...nextDir};
-  const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-
-  if (head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||snake.some(s=>s.x===head.x&&s.y===head.y)) {
-    alive = false;
-    return;
-  }
-
-  snake.unshift(head);
-  if (head.x===food.x && head.y===food.y) {
-    score += 10;
-    placeFood();
-  } else {
-    snake.pop();
-  }
-  draw();
-}
-
-function draw() {
-  ctx.fillStyle='#000';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle='#0f0';
-  snake.forEach(s => ctx.fillRect(s.x*GRID,s.y*GRID,GRID-1,GRID-1));
-  ctx.fillStyle='#f00';
-  ctx.fillRect(food.x*GRID,food.y*GRID,GRID-1,GRID-1);
-  ctx.fillStyle='#fff';
-  ctx.font='20px monospace';
-  ctx.fillText('Score: '+score, 10, 30);
-}
-
-document.addEventListener('keydown', e => {
-  switch(e.key) {
-    case 'ArrowUp': if(dir.y!==1) nextDir={x:0,y:-1}; break;
-    case 'ArrowDown': if(dir.y!==-1) nextDir={x:0,y:1}; break;
-    case 'ArrowLeft': if(dir.x!==1) nextDir={x:-1,y:0}; break;
-    case 'ArrowRight': if(dir.x!==-1) nextDir={x:1,y:0}; break;
-  }
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
+    if (e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
+    if (e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
+    if (e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
 });
 
-init();
+function gameLoop() {
+    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+    // Wall collision - wrap around
+    if (head.x < 0) head.x = TILE_COUNT - 1;
+    if (head.x >= TILE_COUNT) head.x = 0;
+    if (head.y < 0) head.y = TILE_COUNT - 1;
+    if (head.y >= TILE_COUNT) head.y = 0;
+
+    // Self collision
+    for (let i = 0; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            // Reset game
+            snake = [{x: 10, y: 10}];
+            dx = 1;
+            dy = 0;
+            score = 0;
+            document.getElementById('score').textContent = 'Score: 0';
+            return;
+        }
+    }
+
+    snake.unshift(head);
+
+    // Eat food
+    if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        document.getElementById('score').textContent = 'Score: ' + score;
+        randomFood();
+    } else {
+        snake.pop();
+    }
+
+    // Draw
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw snake
+    ctx.fillStyle = '#0f0';
+    for (let i = 0; i < snake.length; i++) {
+        if (i === 0) ctx.fillStyle = '#0f0';
+        else ctx.fillStyle = '#0a0';
+        ctx.fillRect(snake[i].x * GRID_SIZE, snake[i].y * GRID_SIZE, GRID_SIZE - 2, GRID_SIZE - 2);
+    }
+
+    // Draw food
+    ctx.fillStyle = '#f00';
+    ctx.fillRect(food.x * GRID_SIZE, food.y * GRID_SIZE, GRID_SIZE - 2, GRID_SIZE - 2);
+
+    setTimeout(gameLoop, gameSpeed);
+}
+
+randomFood();
+gameLoop();
