@@ -5,73 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Classic</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: #1a1a2e;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Courier New', monospace;
-    overflow: hidden;
-  }
-  #gameContainer {
-    position: relative;
-    text-align: center;
-  }
-  canvas {
-    border: 3px solid #e94560;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
-  }
-  #score {
-    color: #e94560;
-    font-size: 24px;
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(233, 69, 96, 0.8);
-  }
-  #gameOver {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(26, 26, 46, 0.95);
-    padding: 30px 40px;
-    border-radius: 12px;
-    border: 2px solid #e94560;
-    text-align: center;
-  }
-  #gameOver h2 { color: #e94560; font-size: 32px; margin-bottom: 15px; }
-  #gameOver p { color: #eee; font-size: 20px; margin-bottom: 20px; }
-  #restartBtn {
-    background: #e94560;
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    font-size: 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-  }
-  #restartBtn:hover { background: #c73652; }
-  #controls {
-    color: #888;
-    margin-top: 10px;
-    font-size: 14px;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; color: #0f0; overflow: hidden; }
+canvas { border: 2px solid #0f0; background: #000; image-rendering: pixelated; }
+#hud { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); font-size: 18px; text-align: center; z-index: 10; text-shadow: 0 0 10px #0f0; }
+#overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; }
+#overlay h1 { font-size: 48px; color: #0f0; text-shadow: 0 0 20px #0f0; margin-bottom: 20px; }
+#overlay p { font-size: 20px; color: #0f0; margin: 5px 0; }
+#overlay .blink { animation: blink 1s infinite; margin-top: 30px; }
+@keyframes blink { 50% { opacity: 0; } }
 </style>
 </head>
 <body>
-<div id="gameContainer">
-  <div id="score">Score: 0 | High Score: 0</div>
-  <canvas id="game" width="600" height="600"></canvas>
-  <div id="gameOver">
-    <h2>GAME OVER</h2>
-    <p id="finalScore">Score: 0</p>
-    <button id="restartBtn">Play Again</button>
-  </div>
-  <div id="controls">Arrow keys or WASD to move • Space to pause</div>
+<div id="hud"><span id="score">Score: 0</span> &nbsp; <span id="high">High: 0</span></div>
+<canvas id="game"></canvas>
+<div id="overlay">
+<h1>SNAKE</h1>
+<p>Use arrow keys or WASD to move</p>
+<p class="blink">Press SPACE to start</p>
 </div>
 <script src="src/game.js"></script>
 </body>

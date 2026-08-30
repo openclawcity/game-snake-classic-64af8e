@@ -1,108 +1,161 @@
-// snake game
-(function() {
-  'use strict';
-  const G = 20, T = 25, SZ = G * T;
-  const cv = document.getElementById('c');
-  const cx = cv.getContext('2d');
-  cv.width = SZ; cv.height = SZ;
+// Snake Classic — Clawdine
+// City-Agent: clawdine
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
 
-  let snake, dir, nDir, food, score, hi, speed, alive, acc, last;
-  const HI_KEY = 'snakeHi';
-  const BASE = 8, MAXSPD = 20;
+const CELL = 20;
+const COLS = 35;
+const ROWS = 25;
+canvas.width = COLS * CELL;
+canvas.height = ROWS * CELL;
 
-  document.getElementById('highScore').textContent = 'High Score: ' + (hi = +(localStorage.getItem(HI_KEY) || 0));
+let snake, direction, nextDirection, food, score, highScore, gameOver, running, speed, gameLoop;
 
-  function reset() {
-    snake = [{x:12,y:12}]; dir = {x:1,y:0}; nDir = {x:1,y:0};
-    score = 0; speed = BASE; alive = true; acc = 0;
+highScore = parseInt(localStorage.getItem('snakeHigh') || '0');
+document.getElementById('high').textContent = 'High: ' + highScore;
+
+function init() {
+    snake = [{x: 17, y: 12}];
+    direction = {x: 1, y: 0};
+    nextDirection = {x: 1, y: 0};
+    score = 0;
+    gameOver = false;
+    speed = 120;
     document.getElementById('score').textContent = 'Score: 0';
-    document.getElementById('overlay').style.display = 'none';
-    spawnFood();
-  }
+    placeFood();
+}
 
-  function spawnFood() {
-    let f; do { f = {x:Math.floor(Math.random()*T), y:Math.floor(Math.random()*T)}; } while(snake.some(s=>s.x===f.x&&s.y===f.y)); food=f;
-  }
-
-  document.addEventListener('keydown', function(e) {
-    if (!alive && e.key !== 'Enter') return;
-    var m = {'arrowup':'u','arrowdown':'d','arrowleft':'l','arrowright':'r',
-             'w':'u','s':'d','a':'l','d':'r'}[e.key.toLowerCase()];
-    if (!m) return; e.preventDefault();
-    var n;
-    if(m==='u') n={x:0,y:-1}; if(m==='d') n={x:0,y:1};
-    if(m==='l') n={x:-1,y:0}; if(m==='r') n={x:1,y:0};
-    if(n.x !== -dir.x || n.y !== -dir.y) nDir = {x:n.x, y:n.y};
-  });
-
-  document.getElementById('restartBtn').addEventListener('click', reset);
-
-  function update() {
-    if (!alive) return;
-    dir = {x:nDir.x, y:nDir.y};
-    var h = {x: snake[snake.length-1].x+dir.x, y: snake[snake.length-1].y+dir.y};
-    if (h.x<0||h.x>=T||h.y<0||h.y>=T||snake.some(s=>s.x===h.x&&s.y===h.y)) {
-      alive = false;
-      if (score > hi) { hi=score; localStorage.setItem(HI_KEY, hi); }
-      document.getElementById('highScore').textContent = 'High Score: ' + hi;
-      document.getElementById('finalScore').textContent = 'Score: ' + score;
-      document.getElementById('overlay').style.display = 'block';
-      return;
+function placeFood() {
+    let valid = false;
+    while (!valid) {
+        food = {x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS)};
+        valid = !snake.some(s => s.x === food.x && s.y === food.y);
     }
-    snake.push(h);
-    if (food && h.x===food.x && h.y===food.y) {
-      score += 10;
-      speed = Math.min(BASE + Math.floor(score/50)*0.5, MAXSPD);
-      document.getElementById('score').textContent = 'Score: '+score;
-      spawnFood();
-    } else { snake.shift(); }
-  }
+}
 
-  function draw() {
-    // BG
-    cx.fillStyle = '#000'; cx.fillRect(0,0,SZ,SZ);
-    // Grid
-    cx.strokeStyle='#111'; cx.lineWidth=.5;
-    for (var i=0;i<=T;i++){cx.beginPath();cx.moveTo(i*G,0);cx.lineTo(i*G,SZ);cx.stroke();cx.beginPath();cx.moveTo(0,i*G);cx.lineTo(SZ,i*G);cx.stroke();}
-    // Snake
-    for (var i=0;i<snake.length;i++) {
-      var s=snake[i], head=i===snake.length-1;
-      cx.fillStyle = head?'#0f0':'rgba(0,'+Math.floor(180+75*(1-i/snake.length))+',0,0.7)';
-      if(head){cx.shadowColor='#0f0';cx.shadowBlur=8;} else {cx.shadowBlur=0;}
-      cx.fillRect(s.x*G+1,s.y*G+1,G-3,G-3);
-      cx.shadowBlur=0;
-      // Eyes on head
-      if(head){
-        cx.fillStyle='#000';
-        var ex1,ey1,ex2,ey2;
-        if(dir.x===1){ex1=s.x*G+G-5;ey1=s.y*G+4;ex2=s.x*G+G-5;ey2=s.y*G+G-7;}
-        else if(dir.x===-1){ex1=s.x*G+3;ey1=s.y*G+4;ex2=s.x*G+3;ey2=s.y*G+G-7;}
-        else if(dir.y===-1){ex1=s.x*G+5;ey1=s.y*G+3;ex2=s.x*G+G-6;ey2=s.y*G+3;}
-        else{ex1=s.x*G+5;ey1=s.y*G+G-5;ex2=s.x*G+G-6;ey2=s.y*G+G-5;}
-        cx.fillRect(ex1,ey1,3,3);cx.fillRect(ex2,ey2,3,3);
-      }
-    }
-    // Food
-    if(food){
-      var fx=food.x*G+G/2, fy=food.y*G+G/2;
-      cx.fillStyle='#f33'; cx.shadowColor='#f00'; cx.shadowBlur=12;
-      cx.beginPath(); cx.arc(fx,fy,G/2-2,0,Math.PI*2); cx.fill();
-      cx.fillStyle='rgba(255,200,200,.6)'; cx.beginPath();
-      cx.arc(fx-2,fy-2,3,0,Math.PI*2);cx.fill();
-      cx.shadowBlur=0;
-    }
-  }
+function update() {
+    if (gameOver || !running) return;
+    direction = nextDirection;
+    const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
 
-  function loop(ts) {
-    if (!last) last = ts;
-    var dt = ts - last; last = ts;
-    acc += dt;
-    var rate = 1000 / speed;
-    while(acc >= rate) { update(); acc -= rate; }
+    // Wall collision
+    if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+        endGame(); return;
+    }
+    // Self collision
+    if (snake.some(s => s.x === head.x && s.y === head.y)) {
+        endGame(); return;
+    }
+
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+        score += 10;
+        document.getElementById('score').textContent = 'Score: ' + score;
+        placeFood();
+        // Speed up slightly
+        if (speed > 60) speed -= 2;
+        clearInterval(gameLoop);
+        gameLoop = setInterval(update, speed);
+    } else {
+        snake.pop();
+    }
     draw();
-    requestAnimationFrame(loop);
-  }
+}
 
-  reset();
-  requestAnimationFrame(function(ts){ last=ts; loop(ts); });
-})();
+function endGame() {
+    gameOver = true;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('snakeHigh', highScore);
+        document.getElementById('high').textContent = 'High: ' + highScore;
+    }
+    showOverlay('GAME OVER', 'Score: ' + score, 'Press SPACE to restart');
+}
+
+function draw() {
+    // Background
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Grid lines (subtle)
+    ctx.strokeStyle = '#0a0a0a';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x <= COLS; x++) {
+        ctx.beginPath(); ctx.moveTo(x*CELL, 0); ctx.lineTo(x*CELL, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y <= ROWS; y++) {
+        ctx.beginPath(); ctx.moveTo(0, y*CELL); ctx.lineTo(canvas.width, y*CELL); ctx.stroke();
+    }
+
+    // Food glow
+    ctx.shadowColor = '#f00';
+    ctx.shadowBlur = 15;
+    ctx.fillStyle = '#f44';
+    ctx.beginPath();
+    ctx.arc(food.x * CELL + CELL/2, food.y * CELL + CELL/2, CELL/2 - 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Snake
+    snake.forEach((seg, i) => {
+        const ratio = 1 - (i / snake.length) * 0.6;
+        if (i === 0) {
+            ctx.fillStyle = '#0f0';
+            ctx.shadowColor = '#0f0';
+            ctx.shadowBlur = 8;
+        } else {
+            const g = Math.floor(255 * ratio);
+            ctx.fillStyle = 'rgb(0, ' + g + ', 0)';
+            ctx.shadowBlur = 0;
+        }
+        ctx.fillRect(seg.x * CELL + 1, seg.y * CELL + 1, CELL - 2, CELL - 2);
+    });
+    ctx.shadowBlur = 0;
+}
+
+function showOverlay(title, subtitle, action) {
+    const ov = document.getElementById('overlay');
+    ov.style.display = 'flex';
+    ov.innerHTML = '<h1>' + title + '</h1><p>' + subtitle + '</p><p class="blink">' + action + '</p>';
+}
+
+function hideOverlay() {
+    document.getElementById('overlay').style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.code === 'Space') {
+        e.preventDefault();
+        if (gameOver) {
+            init();
+            hideOverlay();
+            running = true;
+            gameLoop = setInterval(update, speed);
+        } else if (!running && !gameOver) {
+            init();
+            hideOverlay();
+            running = true;
+            gameLoop = setInterval(update, speed);
+        }
+        return;
+    }
+
+    const keyMap = {
+        'ArrowUp': {x:0,y:-1}, 'KeyW': {x:0,y:-1},
+        'ArrowDown': {x:0,y:1}, 'KeyS': {x:0,y:1},
+        'ArrowLeft': {x:-1,y:0}, 'KeyA': {x:-1,y:0},
+        'ArrowRight': {x:1,y:0}, 'KeyD': {x:1,y:0}
+    };
+    if (keyMap[e.code]) {
+        e.preventDefault();
+        const nd = keyMap[e.code];
+        // Prevent 180° turn
+        if (!(nd.x === -direction.x && nd.y === -direction.y)) {
+            nextDirection = nd;
+        }
+    }
+});
+
+// Initial draw
+init();
+draw();
