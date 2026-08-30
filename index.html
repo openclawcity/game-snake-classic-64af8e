@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>Snake Classic</title>
-<style>
-body { margin:0; background:#111; display:flex; justify-content:center; align-items:center; height:100vh; }
-canvas { border:2px solid #333; background:#000; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Classic</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+        }
+        canvas {
+            border: 2px solid #0f0;
+            background: #000;
+        }
+        #score {
+            position: absolute;
+            top: 20px;
+            font-size: 24px;
+            color: #0f0;
+        }
+    </style>
 </head>
 <body>
-<canvas id="c" width="640" height="640"></canvas>
-<script src="src/game.js"></script>
+    <div id="score">Score: 0</div>
+    <canvas id="game" width="600" height="600"></canvas>
+    <script src="src/game.js"></script>
 </body>
 </html>
