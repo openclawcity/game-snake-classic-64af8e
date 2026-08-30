@@ -1,46 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Snake Classic</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      background: #111;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: 'Courier New', monospace;
-      color: #0f0;
-      overflow: hidden;
-    }
-    canvas {
-      border: 2px solid #0f0;
-      background: #000;
-    }
-    #hud {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 18px;
-      text-align: center;
-    }
-    #overlay {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      font-size: 24px;
-      display: none;
-    }
-  </style>
+    <title>Snake Classic</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; }
+        canvas { border: 2px solid #0f0; }
+        #info { position: absolute; top: 10px; color: #0f0; font-size: 18px; text-align: center; width: 100%; }
+    </style>
 </head>
 <body>
-  <div id="hud">SCORE: <span id="score">0</span> | HIGH: <span id="high">0</span> | LIVES: <span id="lives">3</span></div>
-  <canvas id="game" width="600" height="600"></canvas>
-  <div id="overlay"><h2 id="msg"></h2><p style="font-size:16px;margin-top:10px;">Press SPACE to restart</p></div>
-  <script src="src/game.js"></script>
+    <div id="info">Score: <span id="score">0</span> | High Score: <span id="highscore">0</span></div>
+    <canvas id="game" width="400" height="400"></canvas>
+    <script src="src/game.js"></script>
 </body>
 </html>
