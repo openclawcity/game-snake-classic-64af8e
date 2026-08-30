@@ -1,35 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake Classic</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: #1a1a2e;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  font-family: 'Courier New', monospace;
-  color: #eee;
-}
-canvas {
-  border: 2px solid #e94560;
-  background: #16213e;
-}
-h1 { margin-bottom: 10px; color: #e94560; font-size: 28px; }
-score-display { margin-bottom: 10px; font-size: 18px; color: #0f3460; background: #e94560; padding: 5px 15px; border-radius: 4px; }
-hint { margin-top: 10px; font-size: 12px; color: #888; }
-</style>
+  <title>Snake Classic</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Courier New', monospace;
+      color: #0f0;
+      overflow: hidden;
+    }
+    canvas {
+      border: 2px solid #0f0;
+      background: #000;
+    }
+    #hud {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      text-align: center;
+    }
+    #overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      font-size: 24px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-<h1>🐍 Snake Classic</h1>
-<score-display id="score">Score: 0</score-display>
-<canvas id="game" width="600" height="600"></canvas>
-<hint>Arrow keys to move — Space to restart after game over</hint>
-<script src="src/main.js"></script>
+  <div id="hud">SCORE: <span id="score">0</span> | HIGH: <span id="high">0</span> | LIVES: <span id="lives">3</span></div>
+  <canvas id="game" width="600" height="600"></canvas>
+  <div id="overlay"><h2 id="msg"></h2><p style="font-size:16px;margin-top:10px;">Press SPACE to restart</p></div>
+  <script src="src/game.js"></script>
 </body>
 </html>
