@@ -1,114 +1,113 @@
-const canvas = document.getElementById('game');
+const canvas = document.getElementById('c');
 const ctx = canvas.getContext('2d');
 
-// Responsive sizing
 const GRID = 20;
-canvas.width = Math.min(600, window.innerWidth - 20);
-canvas.height = canvas.width;
 const COLS = canvas.width / GRID;
 const ROWS = canvas.height / GRID;
+const SPEED = 120;
 
-let snake, dir, food, score, gameOver, speed, lastTime;
+let snake, dir, nextDir, food, score, alive, loop;
 
 function init() {
-  snake = [{x: Math.floor(COLS/2), y: Math.floor(ROWS/2)}];
+  snake = [{x: 10, y: 10}];
   dir = {x: 1, y: 0};
+  nextDir = {x: 1, y: 0};
   score = 0;
-  gameOver = false;
-  speed = 150;
-  lastTime = 0;
+  alive = true;
   placeFood();
-  requestAnimationFrame(loop);
+  loop = setInterval(update, SPEED);
 }
 
 function placeFood() {
-  let valid = false;
-  while (!valid) {
+  while (true) {
     food = {x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS)};
-    valid = !snake.some(s => s.x === food.x && s.y === food.y);
+    if (!snake.some(s => s.x === food.x && s.y === food.y)) break;
   }
-}
-
-function loop(time) {
-  if (gameOver) { drawEnd(); return; }
-  const delta = time - lastTime;
-  if (delta >= speed) {
-    update();
-    lastTime = time;
-  }
-  draw();
-  requestAnimationFrame(loop);
 }
 
 function update() {
+  if (!alive) return;
+  dir = nextDir;
   const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-  
-  // Wrap edges
+
+  // Wrap walls
   if (head.x < 0) head.x = COLS - 1;
   if (head.x >= COLS) head.x = 0;
   if (head.y < 0) head.y = ROWS - 1;
   if (head.y >= ROWS) head.y = 0;
-  
+
   // Self collision
   if (snake.some(s => s.x === head.x && s.y === head.y)) {
-    gameOver = true;
+    alive = false;
+    clearInterval(loop);
     return;
   }
-  
+
   snake.unshift(head);
-  
+
   if (head.x === food.x && head.y === food.y) {
     score += 10;
-    if (speed > 50) speed -= 2;
     placeFood();
   } else {
     snake.pop();
   }
 }
 
+document.addEventListener('keydown', e => {
+  switch(e.key) {
+    case 'ArrowUp': if (dir.y !== 1) nextDir = {x:0, y:-1}; break;
+    case 'ArrowDown': if (dir.y !== -1) nextDir = {x:0, y:1}; break;
+    case 'ArrowLeft': if (dir.x !== 1) nextDir = {x:-1, y:0}; break;
+    case 'ArrowRight': if (dir.x !== -1) nextDir = {x:1, y:0}; break;
+  }
+});
+
 function draw() {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Draw food
-  ctx.fillStyle = '#f00';
-  ctx.fillRect(food.x * GRID + 1, food.y * GRID + 1, GRID - 2, GRID - 2);
-  
-  // Draw snake
-  ctx.fillStyle = '#0f0';
+
+  // Food
+  ctx.fillStyle = '#f44';
+  ctx.fillRect(food.x*GRID+1, food.y*GRID+1, GRID-2, GRID-2);
+
+  // Snake
   snake.forEach((s, i) => {
     ctx.fillStyle = i === 0 ? '#0f0' : '#0a0';
-    ctx.fillRect(s.x * GRID + 1, s.y * GRID + 1, GRID - 2, GRID - 2);
+    ctx.fillRect(s.x*GRID+1, s.y*GRID+1, GRID-2, GRID-2);
   });
-  
+
   // Score
   ctx.fillStyle = '#fff';
   ctx.font = '16px monospace';
-  ctx.fillText('Score: ' + score, 10, 24);
-}
+  ctx.fillText('Score: ' + score, 10, 20);
 
-function drawEnd() {
-  ctx.fillStyle = 'rgba(0,0,0,0.7)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#f00';
-  ctx.font = '32px monospace';
-  ctx.fillText('GAME OVER', canvas.width/2 - 90, canvas.height/2 - 20);
-  ctx.fillStyle = '#fff';
-  ctx.font = '20px monospace';
-  ctx.fillText('Score: ' + score, canvas.width/2 - 40, canvas.height/2 + 20);
-  ctx.fillText('Press SPACE to restart', canvas.width/2 - 110, canvas.height/2 + 55);
-}
+  if (!alive) {
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = '32px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('GAME OVER', canvas.width/2, canvas.height/2 - 10);
+    ctx.font = '16px monospace';
+    ctx.fillText('Press Space to restart', canvas.width/2, canvas.height/2 + 20);
+    ctx.textAlign = 'left';
 
-// Input
-document.addEventListener('keydown', e => {
-  switch(e.key) {
-    case 'ArrowUp': if (dir.y !== 1) dir = {x:0,y:-1}; break;
-    case 'ArrowDown': if (dir.y !== -1) dir = {x:0,y:1}; break;
-    case 'ArrowLeft': if (dir.x !== 1) dir = {x:-1,y:0}; break;
-    case 'ArrowRight': if (dir.x !== -1) dir = {x:1,y:0}; break;
-    case ' ': if (gameOver) init(); break;
+    if (e && e.key === ' ') init();
   }
-  e.preventDefault();
+}
+
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' && !alive) {
+    e.preventDefault();
+    init();
+  }
 });
 
 init();
+gameLoop();
