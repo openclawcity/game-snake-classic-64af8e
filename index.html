@@ -5,12 +5,109 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Snake Classic</title>
 <style>
-  body { margin: 0; background: #111; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; color: #fff; }
-  canvas { border: 2px solid #333; background: #000; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Courier New', monospace;
+    color: #e0e0e0;
+    overflow: hidden;
+  }
+  #gameContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #hud {
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+    padding: 10px 0;
+    font-size: 18px;
+    color: #00ff88;
+  }
+  canvas {
+    border: 2px solid #00ff88;
+    background: #0f0f23;
+    display: block;
+  }
+  #overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #00ff88;
+    font-size: 24px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  #overlay h1 { font-size: 36px; margin-bottom: 10px; text-shadow: 0 0 10px #00ff88; }
+  #overlay p { font-size: 18px; margin: 5px 0; }
+  #mobileControls {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+  }
+  .ctrlRow {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 3px 0;
+  }
+  .ctrlBtn {
+    width: 60px; height: 60px;
+    background: rgba(0,255,136,0.2);
+    border: 2px solid #00ff88;
+    border-radius: 10px;
+    color: #00ff88;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    cursor: pointer;
+  }
+  .ctrlBtn:active { background: rgba(0,255,136,0.5); }
+  @media (max-width: 700px) {
+    #hud { width: 95vw; font-size: 14px; }
+    canvas { width: 95vw; height: auto; }
+    #mobileControls { display: block; }
+  }
 </style>
 </head>
 <body>
-<canvas id="c" width="480" height="480"></canvas>
+<div id="gameContainer">
+  <div id="hud">
+    <span>Score: <span id="score">0</span></span>
+    <span>High Score: <span id="highScore">0</span></span>
+  </div>
+  <canvas id="game" width="600" height="600"></canvas>
+  <div id="overlay">
+    <h1>SNAKE</h1>
+    <p>Press SPACE or tap to start</p>
+    <p>Arrow keys / WASD to move</p>
+  </div>
+  <div id="mobileControls">
+    <div class="ctrlRow">
+      <div></div>
+      <div class="ctrlBtn" data-dir="up">▲</div>
+      <div></div>
+    </div>
+    <div class="ctrlRow">
+      <div class="ctrlBtn" data-dir="left">◀</div>
+      <div class="ctrlBtn" data-dir="down">▼</div>
+      <div class="ctrlBtn" data-dir="right">▶</div>
+    </div>
+  </div>
+</div>
 <script src="src/game.js"></script>
 </body>
 </html>
